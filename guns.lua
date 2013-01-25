@@ -101,6 +101,7 @@ firearmslib.register_firearm("firearms:m4", {
     clip_size = 10;
     spread = 0.035;
     burst = 3;
+    burst_interval = 0.15;
 	wield_scale = {x=2,y=2,z=2};
 });
 

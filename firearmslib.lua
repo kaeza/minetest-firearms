@@ -50,13 +50,12 @@ local function shoot ( itemstack, player, pointed_thing )
     local gundef = firearmslib.firearms[gunname];
     local bulletname = gundef.bullets;
     local bulletdef = firearmslib.bullets[bulletname];
-    local usestack = ItemStack(bulletname);
+    local burst = gundef.burst or 1;
+    local usestack = ItemStack(bulletname.." "..burst);
 
-    local burst = gundef.burst or 1; -- Not currently implemented
-    
-    --if (inv:contains_item("main", usestack)) then
-    --    inv:remove_item("main", usestack);
+    local function do_shoot ( param )
         local playerpos = player:getpos();
+        if (not playerpos) then return; end
         local dir = player:get_look_dir();
         local pellets = bulletdef.pellets or 1;
         for n = 1, pellets do
@@ -78,10 +77,18 @@ local function shoot ( itemstack, player, pointed_thing )
         
         end
         minetest.sound_play(gundef.sound or 'firearms_default_blast', {
-            pos = player:getpos();
+            pos = playerpos;
             gain = 0.3;
             max_hear_distance = 50;
         });
+        if (param and (param > 0)) then
+            minetest.after(gundef.burst_interval, do_shoot, param - 1);
+        end
+    end
+    
+    --if (inv:contains_item("main", usestack)) then
+    --    inv:remove_item("main", usestack);
+        do_shoot(burst - 1);
     --end
 end
 
