@@ -69,7 +69,7 @@ firearmslib.register_firearm("firearms:m79", {
 });
 
 firearmslib.register_bullet("firearms:rocket", {
-    description = "40mm HE Rounds";
+    description = "Rocket";
     inventory_image = "firearms_rocket.png";
     texture = "firearms_rocket_entity.png";
     damage = 10;
