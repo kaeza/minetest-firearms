@@ -76,7 +76,8 @@ local function shoot ( itemstack, player, pointed_thing )
             bullet:setacceleration({ x=0, y=-(bulletdef.gravity or 1), z=0 });
         
         end
-        minetest.sound_play(gundef.sound or 'firearms_default_blast', {
+        local sound = (gundef.sounds and gundef.sounds.shoot);
+        minetest.sound_play(sound or 'firearms_default_blast', {
             pos = playerpos;
             gain = 0.3;
             max_hear_distance = 50;
@@ -153,7 +154,7 @@ firearmslib.register_bullet = function ( name, def )
 
                 if ((obj:get_entity_name() ~= self.object:get_entity_name())
                  and (obj:get_entity_name() ~= "firearms:smokepuff")) then
-                    if (obj:get_hp() <= 0) then
+                    if ((not obj:is_player()) and (obj:get_hp() <= 0)) then
                         obj:remove();
                     end
     
@@ -165,7 +166,7 @@ firearmslib.register_bullet = function ( name, def )
             end
         end
 
-        if (self.timer >= (self.def.maxtimer or 5)) then
+        if (self.timer >= (self.def.maxtimer or 3)) then
             self:_destroy();
             return;
         end

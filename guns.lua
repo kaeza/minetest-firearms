@@ -39,6 +39,9 @@ firearmslib.register_firearm("firearms:pistol_45", {
     bullets = "firearms:bullet_45";
     clip_size = 10;
     spread = 0.020;
+    sounds = {
+        shoot = "firearms_pistol_45_shot";
+    };
 });
 
 firearmslib.register_bullet("firearms:he_40mm", {
@@ -60,6 +63,9 @@ firearmslib.register_firearm("firearms:m79", {
     clip_size = 10;
     spread = 0.020;
 	wield_scale = {x=2,y=2,z=2};
+    sounds = {
+        shoot = "firearms_m79_shot";
+    };
 });
 
 firearmslib.register_bullet("firearms:rocket", {
@@ -68,7 +74,7 @@ firearmslib.register_bullet("firearms:rocket", {
     texture = "firearms_rocket_entity.png";
     damage = 10;
     power = 5;
-    speed = 10;
+    speed = 25;
     gravity = 0;
     explosion_range = 7.5;
     explosion_damage = 6;
@@ -83,6 +89,9 @@ firearmslib.register_firearm("firearms:bazooka", {
     clip_size = 5;
     spread = 0.035;
 	wield_scale = {x=3,y=3,z=3};
+    sounds = {
+        shoot = "firearms_m79_shot"; -- TODO: Find a better sound
+    };
 });
 
 firearmslib.register_bullet("firearms:bullet_556", {
@@ -103,6 +112,9 @@ firearmslib.register_firearm("firearms:m4", {
     burst = 3;
     burst_interval = 0.15;
 	wield_scale = {x=2,y=2,z=2};
+    sounds = {
+        shoot = "firearms_m4_shot";
+    };
 });
 
 firearmslib.register_bullet("firearms:shell_12", {
@@ -113,7 +125,7 @@ firearmslib.register_bullet("firearms:shell_12", {
     speed = 40;
     gravity = 0;
     pellets = 12;
-    maxtimer = 0.5;
+    maxtimer = 0.3;
 });
 
 firearmslib.register_firearm("firearms:m3", {
@@ -123,4 +135,7 @@ firearmslib.register_firearm("firearms:m3", {
     clip_size = 8;
     spread = 0.100;
 	wield_scale = {x=2,y=2,z=2};
+    sounds = {
+        shoot = "firearms_m3_shot";
+    };
 });
