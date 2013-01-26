@@ -3,19 +3,21 @@
 --
 
 minetest.register_craft({
-  output = 'firearms:he_40mm 20',
+  output = 'firearms:he_40mm',
   recipe = {
     {'', 'default:steel_ingot', ''},
     {'default:steel_ingot', 'bucket:bucket_lava', 'default:steel_ingot'},
     {'', 'default:steel_ingot', ''},
   },
+  replacements = { {"bucket:bucket_lava", "bucket:bucket_empty"} },
 })
 
 minetest.register_craft({
-  output = 'firearms:rocket 20',
+  output = 'firearms:rocket',
   recipe = {
     {'default:steel_ingot', 'bucket:bucket_lava', 'default:steel_ingot'},
   },
+  replacements = { {"bucket:bucket_lava", "bucket:bucket_empty"} },
 })
 
 minetest.register_craft({
