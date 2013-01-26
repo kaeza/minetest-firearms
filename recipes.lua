@@ -48,46 +48,46 @@ minetest.register_craft({
 --
 
 minetest.register_craft({
-  output = 'firearms:pistol_45'
+  output = 'firearms:pistol_45',
   recipe = {
-    {'firearms:bullet_45', 'default:steel_ingot', 'default:steel_ingot'}'
-    {'', 'default:stick', 'deafutl:wood'},
-    {'', '', 'deafault:stick'},
+    {'firearms:bullet_45', 'default:steel_ingot', 'default:steel_ingot'},
+    {'', 'default:stick', 'default:wood'},
+    {'', '', 'default:stick'},
   },
 })
 
 minetest.register_craft({
-  output = 'firearms:m79'
+  output = 'firearms:m79',
   recipe = {
-    {'firearms:he_40mm', 'default:steel_ingot', 'default:steel_ingot'}'
-    {'', 'default:stick', 'deafutl:wood'},
-    {'', '', 'deafault:stick'},
+    {'firearms:he_40mm', 'default:steel_ingot', 'default:steel_ingot'},
+    {'', 'default:stick', 'default:wood'},
+    {'', '', 'default:stick'},
   },
 })
 
 minetest.register_craft({
-  output = 'firearms:bazooka'
+  output = 'firearms:bazooka',
   recipe = {
-    {'firearms:rocket', 'default:steel_ingot', 'default:steel_ingot'}'
-    {'', 'default:stick', 'deafutl:wood'},
-    {'', '', 'deafault:stick'},
+    {'firearms:rocket', 'default:steel_ingot', 'default:steel_ingot'},
+    {'', 'default:stick', 'default:wood'},
+    {'', '', 'default:stick'},
   },
 })
 
 minetest.register_craft({
-  output = 'firearms:m4'
+  output = 'firearms:m4',
   recipe = {
-    {'firearms:bullet_556', 'default:steel_ingot', 'default:steel_ingot'}'
-    {'', 'default:stick', 'deafutl:wood'},
-    {'', '', 'deafault:stick'},
+    {'firearms:bullet_556', 'default:steel_ingot', 'default:steel_ingot'},
+    {'', 'default:stick', 'default:wood'},
+    {'', '', 'default:stick'},
   },
 })
 
 minetest.register_craft({
-  output = 'firearms:m3'
+  output = 'firearms:m3',
   recipe = {
-    {'firearms:shell_12', 'default:steel_ingot', 'default:steel_ingot'}'
-    {'', 'default:stick', 'deafutl:wood'},
-    {'', '', 'deafault:stick'},
+    {'firearms:shell_12', 'default:steel_ingot', 'default:steel_ingot'},
+    {'', 'default:stick', 'default:wood'},
+    {'', '', 'default:stick'},
   },
 })
