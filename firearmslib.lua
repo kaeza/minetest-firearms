@@ -25,10 +25,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ]]
 
-firearmslib = {
-    bullets = { };
-    firearms = { };
-};
+local MODPATH = minetest.get_modpath("firearms");
+
+firearmslib = { };
+
+dofile(MODPATH.."/config.lua");
+
+firearmslib.bullets = { };
+firearmslib.firearms = { };
 
 minetest.register_entity("firearms:smokepuff", {
     physical = false;
@@ -86,11 +90,15 @@ local function shoot ( itemstack, player, pointed_thing )
             minetest.after(gundef.burst_interval, do_shoot, param - 1);
         end
     end
-    
-    --if (inv:contains_item("main", usestack)) then
-    --    inv:remove_item("main", usestack);
+
+    local creative = minetest.setting_get_bool("creative_mode");
+    local has_ammo = inv:contains_item("main", usestack);
+    if ((not creative) and has_ammo) then
+        inv:remove_item("main", usestack);
         do_shoot(burst - 1);
-    --end
+    elseif (creative) then
+        do_shoot(burst - 1);
+    end
 end
 
 firearmslib.register_firearm = function ( name, def )
