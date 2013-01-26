@@ -139,3 +139,11 @@ firearmslib.register_firearm("firearms:m3", {
         shoot = "firearms_m3_shot";
     };
 });
+
+minetest.register_craft({
+	output = 'firearms:pistol_45',
+	recipe = {'default:steel_ingot', 'default:steel_ingot', 'default:wood'},
+		 {'', '', 'default:stick'},
+		 {'', '', 'default:stick'}
+	}
+})
