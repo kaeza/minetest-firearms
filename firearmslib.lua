@@ -91,7 +91,7 @@ local function shoot ( itemstack, player, pointed_thing )
         end
     end
 
-    local creative = minetest.setting_get_bool("creative_mode");
+    local creative = minetest.setting_getbool("creative_mode");
     local has_ammo = inv:contains_item("main", usestack);
     if ((not creative) and has_ammo) then
         inv:remove_item("main", usestack);
