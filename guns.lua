@@ -107,7 +107,7 @@ firearmslib.register_firearm("firearms:m4", {
     description = "M4 Carbine";
     inventory_image = "firearms_m4.png";
     bullets = "firearms:bullet_556";
-    clip_size = 10;
+    clip_size = 12;
     spread = 0.035;
     burst = 3;
     burst_interval = 0.15;
