@@ -1,4 +1,6 @@
 --[[
+This file is part of the Firearms mod for Minetest.
+
 Copyright (C) 2013, Diego Martínez <lkaezadl3@gmail.com>
 All rights reserved.
 

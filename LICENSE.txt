@@ -31,10 +31,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 --- END OF BSD LICENSE ---
 
-Texture files were obtained from Wikimedia Commons, and are released under
-the Creative Commons Zero license.
-
-Sound files come from freesound.org and are also released under the Creative
-Commons Zero license.
+Media files (textures and sounds) were obtained from various sites on the
+net. They were released under the Creative Commons Zero license.
 
 See http://creativecommons.org/publicdomain/zero/1.0/legalcode

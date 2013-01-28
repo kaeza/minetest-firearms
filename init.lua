@@ -1,3 +1,4 @@
+
 local MODPATH = minetest.get_modpath("firearms");
 
 dofile(MODPATH.."/firearmslib.lua");

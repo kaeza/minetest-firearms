@@ -205,6 +205,12 @@ firearmslib.on_destroy_explode = function ( self )
     end
     local p1 = self.object:getpos();
     local ents = minetest.env:get_objects_inside_radius(p1, explosion_range);
+    local sound = (self.def.sounds and self.def.sounds.explode) or "firearms_he_gren_explode";
+    minetest.sound_play(sound, {
+        pos = self.object:getpos();
+        gain = 2.0;
+        max_hear_distance = 150;
+    });
     for _,ent in ipairs(ents) do
         local p2 = ent:getpos();
         local lenx = math.abs(p2.x - p1.x);
