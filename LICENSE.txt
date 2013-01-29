@@ -31,6 +31,28 @@ POSSIBILITY OF SUCH DAMAGE.
 
 --- END OF BSD LICENSE ---
 
+explosion.lua is based off PilzAdam's TNT Mod for Minetest.
+Released under WTFPL. See http://forum.minetest.net/viewtopic.php?id=2902
+to download the TNT mod.
+
+--- START OF WTFPL ---
+
+         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+--- END OF WTFPL ---
+
 Media files (textures and sounds) were obtained from various sites on the
 net. They were released under the Creative Commons Zero license.
 

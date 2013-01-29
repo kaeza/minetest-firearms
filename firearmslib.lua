@@ -211,6 +211,7 @@ firearmslib.on_destroy_explode = function ( self )
         gain = 2.0;
         max_hear_distance = 150;
     });
+    firearmslib.explosion(self.object:getpos());
     for _,ent in ipairs(ents) do
         local p2 = ent:getpos();
         local lenx = math.abs(p2.x - p1.x);
