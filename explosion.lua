@@ -108,7 +108,7 @@ end
 minetest.register_entity("firearms:explosion_debris", {
     physical = true;
     timer = 0;
-    textures = { "firearms_explosion_debris.png" };
+    textures = { "smoke_puff.png" };
     collisionbox = { 0, 0, 0, 0, 0, 0 };
     on_step = function ( self, dtime )
         self.timer = self.timer + dtime;
