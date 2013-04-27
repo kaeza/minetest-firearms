@@ -22,13 +22,15 @@ local destroy = function(pos)
     if nodename ~= "air" then
         minetest.env:remove_node(pos)
         nodeupdate(pos)
-        local obj = minetest.env:add_entity(pos, "firearms:explosion_debris")
-        if obj == nil then
-            return
+        if (firearmslib.EXPLOSION_SMOKE) then
+            local obj = minetest.env:add_entity(pos, "firearms:explosion_debris")
+            if obj == nil then
+                return
+            end
+            obj:get_luaentity().collect = true
+            obj:setacceleration({x=0, y=-10, z=0})
+            obj:setvelocity({x=math.random(0,6)-3, y=10, z=math.random(0,6)-3})
         end
-        obj:get_luaentity().collect = true
-        obj:setacceleration({x=0, y=-10, z=0})
-        obj:setvelocity({x=math.random(0,6)-3, y=10, z=math.random(0,6)-3})
     end
 end
 
