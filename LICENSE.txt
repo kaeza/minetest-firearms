@@ -53,7 +53,18 @@ to download the TNT mod.
 
 --- END OF WTFPL ---
 
-Media files (textures and sounds) were obtained from various sites on the
-net. They were released under the Creative Commons Zero license.
+All the hand-made textures are by me released under CC-BY-SA.
+
+Assault Rifle Reload sound is CC-BY-SA. You can find the original here:
+http://freesound.org/people/ermfilm/sounds/162535/
+
+Shotgun Reload sound is CC-BY-SA. You can find the original here:
+http://freesound.org/people/CeebFrack/sounds/108793/
+
+Pistol Reload and Empty Weapon sounds are CC-BY-SA. Original here:
+http://freesound.org/people/Robkinsons/sounds/100240/
+
+Other media files (textures and sounds) were obtained from various sites on
+the net. They were released under the Creative Commons Zero license.
 
 See http://creativecommons.org/publicdomain/zero/1.0/legalcode

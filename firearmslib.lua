@@ -92,6 +92,7 @@ local function shoot ( itemstack, player, pointed_thing )
     local bulletname = gundef.bullets;
     local bulletdef = firearmslib.bullets[bulletname];
     local burst = gundef.burst or 1;
+    local clip = tonumber(itemstack:get_metadata()) or 0;
     
     local function do_shoot ( param )
         local playerpos = player:getpos();
@@ -104,7 +105,7 @@ local function shoot ( itemstack, player, pointed_thing )
             local spready = (-gundef.spread) + (math.random() * gundef.spread * 2);
             local spreadz = (-gundef.spread) + (math.random() * gundef.spread * 2);
 
-            if (gundef.speed) then
+            if (bulletdef.speed) then
                 -- Entity based bullet
                 local bullet = minetest.env:add_entity(
                     {x=playerpos.x, y=playerpos.y + 1.5, z=playerpos.z },
@@ -128,12 +129,20 @@ local function shoot ( itemstack, player, pointed_thing )
                     user = player;
                 });
                 --print("DEBUG: pointed object: "..dump(obj));
-                if (obj and obj.entity) then
-                    --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
-                    obj = obj.entity;
-                    obj:set_hp(obj:get_hp() - bulletdef.power);
-                    if ((not obj:is_player()) and (obj:get_hp() <= 0)) then
-                        obj:remove();
+                if (obj) then
+                    if (firearmslib.ENABLE_BREAKING_GLASS and obj.node
+                     and firearmslib.BREAKING_GLASS_NODES[obj.node.name]) then
+                        if (minetest.get_modpath("item_drop")) then
+                            minetest.spawn_item(obj.pos, obj.node.name);
+                        end
+                        minetest.env:remove_node(obj.pos);
+                    elseif (obj.entity) then
+                        --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
+                        obj = obj.entity;
+                        obj:set_hp(obj:get_hp() - bulletdef.power);
+                        if ((not obj:is_player()) and (obj:get_hp() <= 0)) then
+                            obj:remove();
+                        end
                     end
                 end
             end
@@ -141,47 +150,51 @@ local function shoot ( itemstack, player, pointed_thing )
         local sound = (gundef.sounds and gundef.sounds.shoot);
         minetest.sound_play(sound or 'firearms_default_blast', {
             pos = playerpos;
-            gain = 0.3;
-            max_hear_distance = 50;
+            max_hear_distance = 20;
         });
         if (param and (param > 0)) then
             minetest.after(gundef.burst_interval, do_shoot, param - 1);
         end
     end
 
-    --print("DEBUG: on_use: metadata=\""..itemstack:get_metadata().."\"");
-    local clip = tonumber(itemstack:get_metadata()) or 0;
-
     if (player:get_player_control().sneak) then
         -- Reload.
         local ammo = count_ammo(gundef, player);
         local needed = gundef.clip_size - clip;
         needed = math.min(needed, ammo);
+        if (needed == 0) then return; end
         --print(("DEBUG: Reloading: ammo=%d, needed=%d, clip=%d"):format(ammo, needed, clip)); 
         inv:remove_item("main", bulletname.." "..needed);
         set_ammo(player, clip+needed, ammo-needed);
         if (gundef.sounds and gundef.sounds.reload) then
             minetest.sound_play(gundef.sounds.reload, {
                 pos = playerpos;
-                gain = 0.3;
                 max_hear_distance = 50;
             });
         end
         return ItemStack({name=gundef.name, metadata=tostring(clip+needed)});
     end
 
-    if (clip <= 0) then return; end
+    if (clip <= 0) then
+        if (gundef.sounds.empty) then
+            minetest.sound_play(gundef.sounds.empty, {
+                pos = playerpos;
+                max_hear_distance = 20;
+            });
+        end
+        return;
+    end
 
     burst = math.min(burst, clip);
     clip = clip - burst;
 
-    local creative = minetest.setting_getbool("creative_mode");
-    if (not creative) then
+    --local creative = minetest.setting_getbool("creative_mode");
+    if (creative) then
+        do_shoot(burst - 1, bulletdef.speed);
+    else
         do_shoot(burst - 1, bulletdef.speed);
         set_ammo(player, clip, nil);
         return ItemStack({name=gundef.name, metadata=tostring(clip)});
-    elseif (creative) then
-        do_shoot(burst - 1, bulletdef.speed);
     end
 end
 
