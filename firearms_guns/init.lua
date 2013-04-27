@@ -27,17 +27,17 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ]]
 
-firearmslib.register_bullet("firearms:bullet_45", {
+firearmslib.register_bullet("firearms_guns:bullet_45", {
     description = ".45 Rounds";
     inventory_image = "firearms_bullet_45.png";
     damage = 4;
     power = 5;
 });
 
-firearmslib.register_firearm("firearms:pistol_45", {
+firearmslib.register_firearm("firearms_guns:pistol_45", {
     description = ".45 Pistol";
     inventory_image = "firearms_pistol_45.png";
-    bullets = "firearms:bullet_45";
+    bullets = "firearms_guns:bullet_45";
     clip_size = 10;
     spread = 0.020;
     crosshair_image = "firearms_crosshair_pistol.png";
@@ -49,65 +49,7 @@ firearmslib.register_firearm("firearms:pistol_45", {
     };
 });
 
-firearmslib.register_bullet("firearms:he_40mm", {
-    description = "40mm HE Rounds";
-    inventory_image = "firearms_he_40mm.png";
-    damage = 5;
-    power = 5;
-    speed = 20;
-    gravity = 20;
-    explosion_range = 5;
-    explosion_damage = 10;
-    on_destroy = firearmslib.on_destroy_explode;
-});
-
-firearmslib.register_firearm("firearms:m79", {
-    description = "M79 Grenade Launcher";
-    inventory_image = "firearms_m79.png";
-    bullets = "firearms:he_40mm";
-    clip_size = 10;
-    spread = 0.020;
-    wield_scale = {x=2,y=2,z=2};
-    crosshair_image = "firearms_crosshair_glauncher.png";
-    hud_image = "firearms_m79_hud.png";
-    sounds = {
-        shoot = "firearms_m79_shot";
-		empty = "firearms_default_empty";
-		reload = "firearms_default_reload";
-    };
-});
-
-firearmslib.register_bullet("firearms:rocket", {
-    description = "Rocket";
-    inventory_image = "firearms_rocket.png";
-    texture = "firearms_rocket_entity.png";
-    damage = 10;
-    power = 5;
-    speed = 25;
-    gravity = 0;
-    explosion_range = 7.5;
-    explosion_damage = 6;
-    leaves_smoke = true;
-    on_destroy = firearmslib.on_destroy_explode;
-});
-
-firearmslib.register_firearm("firearms:bazooka", {
-    description = "Bazooka";
-    inventory_image = "firearms_bazooka.png";
-    bullets = "firearms:rocket";
-    clip_size = 5;
-    spread = 0.035;
-    wield_scale = {x=3,y=3,z=3};
-    crosshair_image = "firearms_crosshair_rlauncher.png";
-    hud_image = "firearms_bazooka_hud.png";
-    sounds = {
-        shoot = "firearms_m79_shot"; -- TODO: Find a better sound
-		empty = "firearms_default_empty";
-		--reload = "firearms_default_reload";
-    };
-});
-
-firearmslib.register_bullet("firearms:bullet_556", {
+firearmslib.register_bullet("firearms_guns:bullet_556", {
     description = "5.56 Rifle Rounds";
     inventory_image = "firearms_bullet_556.png";
     damage = 6;
@@ -115,16 +57,15 @@ firearmslib.register_bullet("firearms:bullet_556", {
     gravity = 0;
 });
 
-firearmslib.register_firearm("firearms:m4", {
+firearmslib.register_firearm("firearms_guns:m4", {
     description = "M4 Carbine";
     inventory_image = "firearms_m4.png";
-    bullets = "firearms:bullet_556";
+    bullets = "firearms_guns:bullet_556";
     clip_size = 12;
     spread = 0.035;
     burst = 3;
     burst_interval = 0.15;
     wield_scale = {x=2,y=2,z=2};
-    --crosshair_image = minetest.inventorycube("default_nc_rb.png"); 
     crosshair_image = "firearms_crosshair_rifle.png";
     hud_image = "firearms_m4_hud.png";
     sounds = {
@@ -134,7 +75,7 @@ firearmslib.register_firearm("firearms:m4", {
     };
 });
 
-firearmslib.register_bullet("firearms:shell_12", {
+firearmslib.register_bullet("firearms_guns:shell_12", {
     description = "12 Gauge Shell";
     inventory_image = "firearms_shell_12.png";
     damage = 2;
@@ -144,7 +85,7 @@ firearmslib.register_bullet("firearms:shell_12", {
     maxtimer = 0.3;
 });
 
-firearmslib.register_firearm("firearms:m3", {
+firearmslib.register_firearm("firearms_guns:m3", {
     description = "Benelli M3 Shotgun";
     inventory_image = "firearms_m3.png";
     bullets = "firearms:shell_12";
@@ -157,5 +98,55 @@ firearmslib.register_firearm("firearms:m3", {
         shoot = "firearms_m3_shot";
         empty = "firearms_default_empty";
         reload = "firearms_shotgun_reload";
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms_guns:bullet_45 10';
+    recipe = {
+        { 'default:steel_ingot', 'default:steel_ingot' },
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms_guns:bullet_556 10';
+    recipe = {
+        {'default:steel_ingot', 'default:steel_ingot', 'default:leaves'},
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms_guns:shell_12 8';
+    recipe = {
+        { 'default:steel_ingot', '', '' },
+        { 'default:steel_ingot', 'default:steel_ingot', 'default:steel_ingot' },
+        { 'default:steel_ingot', '', '' },
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms_guns:pistol_45';
+    recipe = {
+        { 'firearms_guns:bullet_45', 'default:steel_ingot', 'default:steel_ingot' },
+        { '', 'default:stick', 'deafutl:wood' },
+        { '', '', 'deafault:stick' },
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms:m4';
+    recipe = {
+        { 'firearms:bullet_556', 'default:steel_ingot', 'default:steel_ingot' },
+        { '', 'default:stick', 'default:wood' },
+        { '', '', 'default:stick' },
+    };
+});
+
+minetest.register_craft({
+    output = 'firearms:m3';
+    recipe = {
+        { 'firearms:shell_12', 'default:steel_ingot', 'default:steel_ingot' },
+        { '', 'default:stick', 'default:wood' },
+        { '', '', 'default:stick' },
     };
 });

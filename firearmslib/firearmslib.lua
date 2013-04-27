@@ -25,12 +25,6 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ]]
 
-local MODPATH = minetest.get_modpath("firearms");
-
-firearmslib = { };
-
-dofile(MODPATH.."/config.lua");
-
 firearmslib.bullets = { };
 firearmslib.firearms = { };
 
@@ -49,7 +43,7 @@ local function count_ammo ( gundef, player )
     return count;
 end
 
-minetest.register_entity("firearms:smokepuff", {
+minetest.register_entity("firearmslib:smokepuff", {
     physical = false;
     timer = 0;
     textures = { "smoke_puff.png" };

@@ -16,14 +16,14 @@
 
 local destroy = function(pos)
     if math.random(1,5) <= 4 then
-        minetest.env:add_entity({x=pos.x+math.random(0,10)/10-0.5, y=pos.y, z=pos.z+math.random(0,10)/10-0.5}, "firearms:explosion_smoke")
+        minetest.env:add_entity({x=pos.x+math.random(0,10)/10-0.5, y=pos.y, z=pos.z+math.random(0,10)/10-0.5}, "firearmslib:explosion_smoke")
     end
     local nodename = minetest.env:get_node(pos).name
     if nodename ~= "air" then
         minetest.env:remove_node(pos)
         nodeupdate(pos)
         if (firearmslib.EXPLOSION_SMOKE) then
-            local obj = minetest.env:add_entity(pos, "firearms:explosion_debris")
+            local obj = minetest.env:add_entity(pos, "firearmslib:explosion_debris")
             if obj == nil then
                 return
             end
@@ -81,7 +81,7 @@ firearmslib.explosion = function(pos)
     end
 end
 
-minetest.register_entity("firearms:explosion_smoke", {
+minetest.register_entity("firearmslib:explosion_smoke", {
     physical = true,
     visual = "sprite",
     textures = {"firearms_explosion_smoke.png"},
@@ -107,7 +107,7 @@ if minetest.setting_get("log_mods") then
     minetest.log("action", "tnt loaded")
 end
 
-minetest.register_entity("firearms:explosion_debris", {
+minetest.register_entity("firearmslib:explosion_debris", {
     physical = true;
     timer = 0;
     textures = { "smoke_puff.png" };
