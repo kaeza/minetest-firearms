@@ -88,7 +88,7 @@ firearmslib.register_bullet("firearms_guns:shell_12", {
 firearmslib.register_firearm("firearms_guns:m3", {
     description = "Benelli M3 Shotgun";
     inventory_image = "firearms_m3.png";
-    bullets = "firearms:shell_12";
+    bullets = "firearms_guns:shell_12";
     clip_size = 8;
     spread = 0.100;
     wield_scale = {x=2,y=2,z=2};

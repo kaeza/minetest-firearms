@@ -87,11 +87,8 @@ local function shoot ( itemstack, player, pointed_thing )
     local bulletdef = firearmslib.bullets[bulletname];
     local burst = gundef.burst or 1;
     local clip = tonumber(itemstack:get_metadata()) or 0;
-    
+
     local function do_shoot ( param )
-        local playerpos = player:getpos();
-        if (not playerpos) then return; end
-        local dir = player:get_look_dir();
         local pellets = bulletdef.pellets or 1;
         for n = 1, pellets do
 
@@ -99,10 +96,17 @@ local function shoot ( itemstack, player, pointed_thing )
             local spready = (-gundef.spread) + (math.random() * gundef.spread * 2);
             local spreadz = (-gundef.spread) + (math.random() * gundef.spread * 2);
 
+            local pos = player:getpos();
+            pos.y = pos.y + 1.625;
+            local dir = player:get_look_dir();
+            pos.x = pos.x + (dir.x / 2);
+            pos.y = pos.y + (dir.y / 2);
+            pos.z = pos.z + (dir.z / 2);
+
             if (bulletdef.speed) then
                 -- Entity based bullet
                 local bullet = minetest.env:add_entity(
-                    {x=playerpos.x, y=playerpos.y + 1.5, z=playerpos.z },
+                    {x=pos.x, y=pos.y + 1.5, z=pos.z },
                     bulletname.."_entity"
                 );
     
@@ -114,15 +118,32 @@ local function shoot ( itemstack, player, pointed_thing )
                 bullet:setacceleration({ x=0, y=-(bulletdef.gravity or 1), z=0 });
             else
                 -- Instant hit.
-                local pos = player:getpos();
-                pos.y = pos.y + 1.625;
+                dir.x = dir.x + spreadx;
+                dir.y = dir.y + spready;
+                dir.z = dir.z + spreadz;
                 local obj = kutils.find_pointed_thing({
                     pos = pos;
-                    delta = player:get_look_dir();
+                    delta = dir;
                     range = 20;
                     user = player;
                 });
                 --print("DEBUG: pointed object: "..dump(obj));
+                local vel = {
+                    x = dir.x * 8;
+                    y = dir.y * 8;
+                    z = dir.z * 8;
+                };
+                -- Flying bullet (thanks to Exio for the idea)
+                minetest.add_particle(
+                    pos,        -- pos
+                    vel,        -- velocity
+                    {x=0,y=0,z=0}, -- acceleration
+                    0.2,          -- expirationtime
+                    0.3,         -- size
+                    false,      -- collisiondetection
+                    "default_wood.png"--, -- texture
+                    --nil         -- playername
+                );
                 if (obj) then
                     if (firearmslib.ENABLE_BREAKING_GLASS and obj.node
                      and firearmslib.BREAKING_GLASS_NODES[obj.node.name]) then
@@ -133,9 +154,9 @@ local function shoot ( itemstack, player, pointed_thing )
                     elseif (obj.entity) then
                         --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
                         obj = obj.entity;
-                        obj:set_hp(obj:get_hp() - bulletdef.power);
-                        if ((not obj:is_player()) and (obj:get_hp() <= 0)) then
-                            obj:remove();
+                        obj.entity:set_hp(obj:get_hp() - bulletdef.power);
+                        if ((not obj.entity:is_player()) and (obj.entity:get_hp() <= 0)) then
+                            obj.entity:remove();
                         end
                     end
                 end
@@ -146,6 +167,30 @@ local function shoot ( itemstack, player, pointed_thing )
             pos = playerpos;
             max_hear_distance = 20;
         });
+
+        local pos = player:getpos();
+        pos.y = pos.y + 1.5;
+        local dir = player:get_look_dir();
+        pos.x = pos.x + (dir.x / 2);
+        pos.y = pos.y + (dir.y / 2);
+        pos.z = pos.z + (dir.z / 2);
+    
+        local vel = {
+            x = (math.random(-15, 15) / 100),
+            y = 0.1,
+            z = (math.random(-15, 15) / 100),
+        };
+        -- Spent cartridge (thanks to VanessaE for the idea)
+        minetest.add_particle(
+            pos,        -- pos
+            vel,        -- velocity
+            {x=0, y=-2, z=0}, -- acceleration
+            3,          -- expirationtime
+            0.6,         -- size
+            true,      -- collisiondetection
+            bulletdef.inventory_image
+        );
+
         if (param and (param > 0)) then
             minetest.after(gundef.burst_interval, do_shoot, param - 1);
         end
