@@ -75,7 +75,7 @@ firearmslib.register_bullet("firearms_destructive:rocket", {
 firearmslib.register_firearm("firearms_destructive:bazooka", {
     description = "Bazooka";
     inventory_image = "firearms_bazooka.png";
-    bullets = "firearms:rocket";
+    bullets = "firearms_destructive:rocket";
     clip_size = 5;
     spread = 0.035;
     wield_scale = {x=3,y=3,z=3};
