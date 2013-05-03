@@ -25,6 +25,25 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ]]
 
+local HQ_FONT = true;
+
+local FONT_CHAR_W, FONT_CHAR_H;
+local FONT_AMMO_SCALE, FONT_CLIP_AMMO_SCALE;
+
+if (HQ_FONT) then
+    FONT_CHAR_W = 13;
+    FONT_CHAR_H = 16;
+    FONT_CLIP_AMMO_SCALE = {x=2, y=2};
+    FONT_AMMO_SCALE = {x=1, y=1};
+    FONT_TEX_PREFIX = "hq_";
+else
+    FONT_CHAR_W = 3;
+    FONT_CHAR_H = 5;
+    FONT_CLIP_AMMO_SCALE = {x=8, y=8};
+    FONT_AMMO_SCALE = {x=4, y=4};
+    FONT_TEX_PREFIX = "";
+end
+
 firearmslib.bullets = { };
 firearmslib.firearms = { };
 
@@ -60,12 +79,13 @@ local wielded_firearm = { };
 
 local function make_number_texture ( n )
     local s = tostring(n);
-    local w = (s:len()*4);
+    local xoff = FONT_CHAR_W + 1;
+    local w = (s:len()*xoff);
     -- [combine:WxH:X,Y=filename:X,Y=filename2
-    local tex = "^[combine:"..(w - 1).."x5";
+    local tex = "^[combine:"..(w - 1).."x"..FONT_CHAR_H;
     for i = 1, s:len() do
-        local t = "firearms_"..s:sub(i, i)..".png";
-        tex = tex..":"..((i - 1) * 4)..",0="..t;
+        local t = "firearms_"..FONT_TEX_PREFIX..s:sub(i, i)..".png";
+        tex = tex..":"..((i - 1) * xoff)..",0="..t;
     end
     return tex;
 end
@@ -364,9 +384,6 @@ end
 
 local timer = 0;
 
-local HUD_CLIP_AMMO_SCALE = 8;
-local HUD_AMMO_SCALE = 4;
-
 local function remove_huds ( player, wf )
     if (wf.hud_crosshair) then
         player:hud_remove(wf.hud_crosshair);
@@ -414,11 +431,11 @@ minetest.register_globalstep(function ( dtime )
                         hud_elem_type = "image";
                         position = { x=1, y=1 };
                         text = make_number_texture(clip);
-                        scale = { x=HUD_CLIP_AMMO_SCALE, y=HUD_CLIP_AMMO_SCALE };
+                        scale = FONT_CLIP_AMMO_SCALE;
                         alignment = { x=-1, y=-1 };
                         offset = {
                             x = -8;
-                            y = -8 - (HUD_AMMO_SCALE * 5) - 8;
+                            y = -8 - (FONT_AMMO_SCALE.x * FONT_CHAR_H) - 8;
                         };
                     });
                     wf.hud_ammo = player:hud_add({
@@ -426,7 +443,7 @@ minetest.register_globalstep(function ( dtime )
                         hud_elem_type = "image";
                         position = { x=1, y=1 };
                         text = make_number_texture(ammo);
-                        scale = { x=HUD_AMMO_SCALE, y=HUD_AMMO_SCALE };
+                        scale = FONT_AMMO_SCALE;
                         alignment = { x=-1, y=-1 };
                         offset = {
                             x = -8;
