@@ -34,11 +34,23 @@ local destroy = function(pos)
     end
 end
 
-firearmslib.explosion = function(pos)
-    minetest.env:remove_node(pos)
-    local objects = minetest.env:get_objects_inside_radius(pos, 7)
+firearmslib.explosion = function ( pos, bulletdef )
+    minetest.env:remove_node(pos);
+    local objects = minetest.env:get_objects_inside_radius(pos, bulletdef.explosion_range or 7);
     for _,obj in ipairs(objects) do
-        if obj:is_player() or (obj:get_luaentity() and obj:get_luaentity().name ~= "__builtin:item") then
+        if (obj:is_player() or (obj:get_luaentity() and obj:get_luaentity().name ~= "__builtin:item")) then
+            local dist = kutils.distance3d(pos, obj:getpos());
+            local damage = bulletdef.explosion_damage * (dist / bulletdef.explosion_range);
+            obj:set_hp(obj.entity:get_hp() - damage);
+            if (obj:get_hp() <= 0) then
+                if (not obj:is_player()) then
+                    obj:remove();
+                end
+                for i,f in ipairs(firearmslib.on_killentity_cbs) do
+                    f(obj, player);
+                end
+            end
+            --[[
             local obj_p = obj:getpos()
             local vec = {x=obj_p.x-pos.x, y=obj_p.y-pos.y, z=obj_p.z-pos.z}
             local dist = (vec.x^2+vec.y^2+vec.z^2)^0.5
@@ -50,6 +62,7 @@ firearmslib.explosion = function(pos)
                     snappy={times={[1]=1/damage, [2]=1/damage, [3]=1/damage}},
                 }
             }, nil)
+            ]]
         end
     end
     

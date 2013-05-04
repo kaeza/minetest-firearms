@@ -98,6 +98,12 @@ local function set_ammo ( player, clip, resv )
     end
 end
 
+local on_killentity_cbs = { };
+
+function firearmslib.register_on_killentity ( func )
+    on_killentity_cbs[#on_killentity_cbs + 1] = func;
+end
+
 local function shoot ( itemstack, player, pointed_thing )
 
     local gunname = itemstack:get_name();
@@ -129,7 +135,10 @@ local function shoot ( itemstack, player, pointed_thing )
                     {x=pos.x, y=pos.y + 1.5, z=pos.z },
                     bulletname.."_entity"
                 );
-    
+                local ent = bullet:get_lua_entity();
+                ent.bulletdef = bulletdef;
+                ent.source = player;
+
                 bullet:setvelocity({
                     x=((dir.x + spreadx) * bulletdef.speed),
                     y=((dir.y + spready) * bulletdef.speed),
@@ -173,10 +182,15 @@ local function shoot ( itemstack, player, pointed_thing )
                         minetest.env:remove_node(obj.pos);
                     elseif (obj.entity) then
                         --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
-                        obj = obj.entity;
-                        obj.entity:set_hp(obj:get_hp() - bulletdef.power);
-                        if ((not obj.entity:is_player()) and (obj.entity:get_hp() <= 0)) then
-                            obj.entity:remove();
+                        local ent = obj.entity;
+                        ent:set_hp(ent:get_hp() - bulletdef.power);
+                        if (ent:get_hp() <= 0) then
+                            if (not ent:is_player()) then
+                                ent:remove();
+                            end
+                            for i,f in ipairs(firearmslib.on_killentity_cbs) do
+                                f(ent, player);
+                            end
                         end
                     end
                 end
@@ -319,8 +333,14 @@ firearmslib.register_bullet = function ( name, def )
     
                     if ((obj:get_entity_name() ~= self.object:get_entity_name())
                      and (obj:get_entity_name() ~= "firearms:smokepuff")) then
-                        if ((not obj:is_player()) and (obj:get_hp() <= 0)) then
-                            obj:remove();
+                        if (obj.entity:get_hp() <= 0) then
+                            if (not obj.entity:is_player()) then
+                                obj.entity:remove();
+                            else
+                                for _,f in ipairs(on_killentity_cbs) do
+                                    f(obj, player);
+                                end
+                            end
                         end
         
                         self:_destroy();
@@ -369,7 +389,7 @@ firearmslib.on_destroy_explode = function ( self )
         gain = 2.0;
         max_hear_distance = 150;
     });
-    firearmslib.explosion(self.object:getpos());
+    firearmslib.explosion(self.object:getpos(), self.bulletdef);
     for _,ent in ipairs(ents) do
         local p2 = ent:getpos();
         local lenx = math.abs(p2.x - p1.x);
@@ -466,3 +486,4 @@ end);
 
 firearmslib.count_ammo = count_ammo;
 firearmslib.count_clip_ammo = count_clip_ammo;
+firearmslib.on_killentity_cbs = on_killentity_cbs;
