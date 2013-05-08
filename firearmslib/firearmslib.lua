@@ -154,6 +154,7 @@ local function shoot ( itemstack, player, pointed_thing )
                     pos = pos;
                     delta = dir;
                     range = 20;
+                    radius = 2;
                     user = player;
                 });
                 --print("DEBUG: pointed object: "..dump(obj));
