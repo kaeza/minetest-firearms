@@ -135,7 +135,7 @@ local function shoot ( itemstack, player, pointed_thing )
                     {x=pos.x, y=pos.y + 1.5, z=pos.z },
                     bulletname.."_entity"
                 );
-                local ent = bullet:get_lua_entity();
+                local ent = bullet:get_luaentity();
                 ent.bulletdef = bulletdef;
                 ent.source = player;
 
