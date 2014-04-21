@@ -25,6 +25,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 ]]
 
+minetest.register_privilege("firearms","the ability to shot") -- added by cg72 with help from kaeza
+
 local HQ_FONT = true;
 
 local FONT_CHAR_W, FONT_CHAR_H;
@@ -62,18 +64,6 @@ local function count_ammo ( gundef, player )
     return count;
 end
 
-minetest.register_entity("firearmslib:smokepuff", {
-    physical = false;
-    timer = 0;
-    textures = { "smoke_puff.png" };
-    collisionbox = { 0, 0, 0, 0, 0, 0 };
-    on_step = function ( self, dtime )
-        self.timer = self.timer + dtime;
-        if (self.timer > 1) then
-            self.object:remove();
-        end
-    end;
-});
 
 local wielded_firearm = { };
 
@@ -105,13 +95,22 @@ function firearmslib.register_on_killentity ( func )
 end
 
 local function shoot ( itemstack, player, pointed_thing )
+    	
+
+    local plname = player:get_player_name()
+    local privs = minetest.get_player_privs(plname)
+    if not privs.firearms then
+            minetest.chat_send_player(plname, "Your gun has jammed!")
+            return
+    end
+
 
     local gunname = itemstack:get_name();
     local inv = player:get_inventory("main");
     local gundef = firearmslib.firearms[gunname];
     local bulletname = gundef.bullets;
     local bulletdef = firearmslib.bullets[bulletname];
-    local burst = gundef.burst or 1;
+    local burst = gundef.burst or (math.random(6, 11));
     local clip = tonumber(itemstack:get_metadata()) or 0;
 
     local function do_shoot ( param )
@@ -153,8 +152,8 @@ local function shoot ( itemstack, player, pointed_thing )
                 local obj = kutils.find_pointed_thing({
                     pos = pos;
                     delta = dir;
-                    range = 20;
-                    radius = 2;
+                    range = gundef.range;--20;
+                    radius = ((gundef.radius / 10) + 0.3);  --1.5;
                     user = player;
                 });
                 --print("DEBUG: pointed object: "..dump(obj));
@@ -171,20 +170,20 @@ local function shoot ( itemstack, player, pointed_thing )
                     0.2,          -- expirationtime
                     0.3,         -- size
                     false,      -- collisiondetection
-                    "default_wood.png"--, -- texture
+                    "round_in_air.png"--, -- texture (new texture by cg72)
                     --nil         -- playername
                 );
                 if (obj) then
                     if (firearmslib.ENABLE_BREAKING_GLASS and obj.node
                      and firearmslib.BREAKING_GLASS_NODES[obj.node.name]) then
-                        if (minetest.get_modpath("item_drop")) then
+                    --[[if (minetest.get_modpath("item_drop")) then
                             minetest.spawn_item(obj.pos, obj.node.name);
-                        end
+                        end]]
                         minetest.env:remove_node(obj.pos);
                     elseif (obj.entity) then
                         --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
                         local ent = obj.entity;
-                        ent:set_hp(ent:get_hp() - bulletdef.power);
+                        ent:set_hp(ent:get_hp() - (bulletdef.power / 3));
                         if (ent:get_hp() <= 0) then
                             if (not ent:is_player()) then
                                 ent:remove();
@@ -200,14 +199,14 @@ local function shoot ( itemstack, player, pointed_thing )
         local sound = (gundef.sounds and gundef.sounds.shoot);
         minetest.sound_play(sound or 'firearms_default_blast', {
             pos = playerpos;
-            max_hear_distance = 20;
+            max_hear_distance = 30;
         });
 
         local pos = player:getpos();
         pos.y = pos.y + 1.5;
         local dir = player:get_look_dir();
         pos.x = pos.x + (dir.x / 2);
-        pos.y = pos.y + (dir.y / 2);
+        pos.y = pos.y + ((dir.y / 2) );
         pos.z = pos.z + (dir.z / 2);
     
         local vel = {
@@ -220,10 +219,10 @@ local function shoot ( itemstack, player, pointed_thing )
             pos,        -- pos
             vel,        -- velocity
             {x=0, y=-2, z=0}, -- acceleration
-            3,          -- expirationtime
+            500,          -- expirationtime
             0.6,         -- size
             true,      -- collisiondetection
-            bulletdef.inventory_image
+            bulletdef.spent_image  -- added spent round texture by cg72
         );
 
         if (param and (param > 0)) then
@@ -243,7 +242,7 @@ local function shoot ( itemstack, player, pointed_thing )
         if (gundef.sounds and gundef.sounds.reload) then
             minetest.sound_play(gundef.sounds.reload, {
                 pos = playerpos;
-                max_hear_distance = 50;
+                max_hear_distance = 10;
             });
         end
         return ItemStack({name=gundef.name, metadata=tostring(clip+needed)});
@@ -253,7 +252,7 @@ local function shoot ( itemstack, player, pointed_thing )
         if (gundef.sounds.empty) then
             minetest.sound_play(gundef.sounds.empty, {
                 pos = playerpos;
-                max_hear_distance = 20;
+                max_hear_distance = 10;
             });
         end
         return;
@@ -283,6 +282,7 @@ firearmslib.register_firearm = function ( name, def )
         on_use = shoot;
         type = "tool";
         wield_scale = def.wield_scale;
+		
     });
     
 end
@@ -294,7 +294,7 @@ firearmslib.register_bullet = function ( name, def )
     minetest.register_craftitem(name, {
         description = def.description or "Unnamed Bullets";
         inventory_image = def.inventory_image;
-        stack_max = def.stack_max or 10;
+        stack_max = def.stack_max or 90;
     });
 
     if (def.speed) then
@@ -318,12 +318,12 @@ firearmslib.register_bullet = function ( name, def )
             local pos = self.object:getpos();
             local node = minetest.env:get_node(pos);
     
-            --[[if ((self.def.leaves_smoke) and (self.lastpos.x)) then
+            if ((self.def.leaves_smoke) and (self.lastpos.x)) then
                 local smoke = minetest.env:add_entity(
                     self.lastpos,
                     "firearms:smokepuff"
                 );
-            end]]
+            end
     
             if (self.timer > 0.10) then
                 local objs = minetest.env:get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1);
@@ -388,7 +388,7 @@ firearmslib.on_destroy_explode = function ( self )
     minetest.sound_play(sound, {
         pos = self.object:getpos();
         gain = 2.0;
-        max_hear_distance = 150;
+        max_hear_distance = 30;
     });
     firearmslib.explosion(self.object:getpos(), self.bulletdef);
     for _,ent in ipairs(ents) do
@@ -488,3 +488,4 @@ end);
 firearmslib.count_ammo = count_ammo;
 firearmslib.count_clip_ammo = count_clip_ammo;
 firearmslib.on_killentity_cbs = on_killentity_cbs;
+

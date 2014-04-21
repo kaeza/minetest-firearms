@@ -7,6 +7,7 @@ if (not kutils.ignore_nodes) then
         ["air"] = true;
         ["default:water_source"] = true;
         ["default:water_flowing"] = true;
+        ["default:leaves"] = true;
     };
 end
     
